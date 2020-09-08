@@ -44,11 +44,15 @@ def slavePodTemplate = """
           }
 
           dir('deployments/docker') {
-            stage('Docker Build'){
-                sh 'docker build -t artemis .'
-            }
-            
 
+              container('docker'){
+                  stage('Docker Build'){
+                    sh 'docker build -t artemis .'
+              
+                  }
+            
+            
+        }
 
 
 
