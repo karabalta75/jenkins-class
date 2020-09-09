@@ -1,6 +1,14 @@
 // Uniq name for the pod or slave 
 def k8slabel = "jenkins-pipeline-${UUID.randomUUID().toString()}"
 def branch = "${scm.branches[0].name}".replaceAll(/^\*\//, '')
+
+properties([
+    [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
+    parameters([
+        booleanParam(defaultValue: false, description: 'Select to be able to push to latest', name: 'pushLatest')
+        ])
+    ])
+
 // yaml def for slaves 
 def slavePodTemplate = """
       metadata:
@@ -51,18 +59,25 @@ def slavePodTemplate = """
                       stage('Docker Build'){
                           sh 'docker build -t artemis .'
               
-                      }
+                        }
 
                       stage('Docker Login'){
                           sh 'docker login --username $USERNAME --password $PASSWORD'
-                      }
+                        } 
 
                       stage('Docker Push')
+
+                          if (params.pushLatest) {
+                            println('Pushing the image to latest version!!')
+                            sh "docker tag artemis karabalta75/artemis"
+                            sh "docker push karabalta75/artemis"
+                            
+                        }
                           println(branch)
                           sh "docker tag artemis karabalta75/artemis:${branch}"
                           sh "docker push karabalta75/artemis:${branch}"
             
-                      }
+                        }
                 }
         }
       }
