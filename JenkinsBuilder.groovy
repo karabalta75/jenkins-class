@@ -53,7 +53,7 @@ def slavePodTemplate = """
                       }
 
                       stage('Docker Login'){
-                          sh 'docker login --username $USERNAME --pasword $PASSWORD'
+                          sh 'docker login --username $USERNAME --password $PASSWORD'
                       }
 
                       stage('Docker Push')
