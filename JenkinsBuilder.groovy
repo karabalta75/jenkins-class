@@ -1,6 +1,7 @@
 // Uniq name for the pod or slave 
 def k8slabel = "jenkins-pipeline-${UUID.randomUUID().toString()}"
 def branch = "${scm.branches[0].name}".replaceAll(/^\*\//, '')
+def gitCommitHash = ''
 
 properties([
     [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
@@ -8,6 +9,10 @@ properties([
         booleanParam(defaultValue: false, description: 'Select to be able to push to latest', name: 'pushLatest')
         ])
     ])
+
+
+
+
 
 // yaml def for slaves 
 def slavePodTemplate = """
@@ -50,6 +55,7 @@ def slavePodTemplate = """
       node(k8slabel) {
           stage("Checkout SCM"){
               checkout scm
+              gitCommitHash = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
           }
 
           dir('deployments/docker') {
@@ -74,8 +80,8 @@ def slavePodTemplate = """
                             
                         }
                           println(branch)
-                          sh "docker tag artemis karabalta75/artemis:${branch}"
-                          sh "docker push karabalta75/artemis:${branch}"
+                          sh "docker tag artemis karabalta75/artemis:${gitCommitHash}"
+                          sh "docker push karabalta75/artemis:${gitCommitHash}"
             
                         }
                 }
