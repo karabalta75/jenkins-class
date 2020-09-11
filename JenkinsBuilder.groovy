@@ -2,6 +2,26 @@
 def k8slabel = "jenkins-pipeline-${UUID.randomUUID().toString()}"
 def branch = "${scm.branches[0].name}".replaceAll(/^\*\//, '')
 def gitCommitHash = ''
+def environment = ""
+
+if (branch == "master") { 
+  println("The application will be deployed to stage environment!")
+  environment = "stage"
+  
+} else if (branch.contains('dev-feature')) {
+  println("The application will be deployed to dev environment!")
+  environment = "dev"
+
+
+} else if (branch.contains('qa-feature')) {
+  println("The application will be deployed to qa environment!")
+  environment = "qa"
+
+} else {
+  println('Please use proper name for your branch')
+  currentBuild.result = 'FAILURE'
+  println("ERROR Detected:")
+}
 
 properties([
     [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
@@ -84,6 +104,15 @@ def slavePodTemplate = """
                           sh "docker push karabalta75/artemis:${gitCommitHash}"
             
                         }
+                      stage('Trigger Deploy'){
+
+                          build job: 'artemis-deploy', 
+                          parameters: [
+                              booleanParam(name: 'applyChanges', value: true), 
+                              booleanParam(name: 'destroyChanges', value: false), 
+                              string(name: 'selectedDockerImage', value: "karabalta75/artemis:${gitCommitHash}"), 
+                              string(name: 'environment', value: 'dev')]
+                      }
                 }
         }
       }
