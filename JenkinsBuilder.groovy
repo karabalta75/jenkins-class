@@ -111,7 +111,7 @@ def slavePodTemplate = """
                               booleanParam(name: 'applyChanges', value: true), 
                               booleanParam(name: 'destroyChanges', value: false), 
                               string(name: 'selectedDockerImage', value: "karabalta75/artemis:${gitCommitHash}"), 
-                              string(name: 'environment', value: "${environment")
+                              string(name: 'environment', value: "${environment}")
                               ]
                             }
                       }
