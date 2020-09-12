@@ -37,7 +37,7 @@ def slavePodTemplate = """
                   - jenkins-jenkins-master
               topologyKey: "kubernetes.io/hostname"
         containers:
-        
+
         - name: fuchicorptools
           image: fuchicorp/buildtools
           imagePullPolicy: Always
@@ -56,9 +56,15 @@ def slavePodTemplate = """
     """
     podTemplate(name: k8slabel, label: k8slabel, yaml: slavePodTemplate, showRawYaml: false) {
       node(k8slabel) {
-        stage("Docker check") {
-            container("docker") {
-                sh 'docker --version'
+
+        stage("Pull the SC"){
+            git 'https://github.com/karabalta75/jenkins-class.git'
+
+        }
+
+        stage("Apply/Plan") {
+            container("fuchicorptools") {
+                sh 'kubectl version'
             }
         }
       }
