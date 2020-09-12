@@ -1,3 +1,6 @@
+// Uniq name for pod/slave
+def k8slabel = "jenkins-pipeline-${UUID.randomUUID().toString()}"
+
 properties([
     [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false], 
     parameters([
@@ -9,13 +12,6 @@ properties([
         ])
 
 
-
-
-
-
-
-// Uniq name for pod/slave
-def k8slabel = "jenkins-pipeline-${UUID.randomUUID().toString()}"
 
 
 // yaml definiton for slaves
