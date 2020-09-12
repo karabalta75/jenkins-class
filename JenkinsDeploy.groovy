@@ -70,6 +70,16 @@ def slavePodTemplate = """
                 }
             }
         }
+
+        stage("destroy") {
+            if (!applyChanges) {
+            if (destroyChanges) {
+            println("Destroying everything")
+         } 
+        } else {
+            println("Sorry I can't destroy and apply")
+  }
+        }
       }
     }
 
