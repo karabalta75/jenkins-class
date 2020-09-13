@@ -71,7 +71,8 @@ def slavePodTemplate = """
                             if (params.destroyChanges) {
                                 println("Destroying everything")
                             } 
-                        } if (params.applyChanges) {
+                        } 
+                        if (params.applyChanges) {
                             if (params.destroyChanges) {
                                 println("""
                                 Sorry I can not destroy Tools!!!
